@@ -9,12 +9,13 @@ from torch.utils.data import DataLoader
 from Perceiver import Perceiver
 import wandb  # Import Weights & Biases
 from torchmetrics import Accuracy, F1Score  # Import torchmetrics
+import tqdm 
 
 # Define the Perceiver model (reuse the provided Perceiver, CrossAttention, SelfAttention, TransformerBlock, PerceiverBlock classes)
 
 # Hyperparameters
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-batch_size = 85 
+batch_size = 160 
 embedding_size = 128
 latent_size = 128
 attention_heads = 4
@@ -68,7 +69,7 @@ def main():
     f1_metric = F1Score(task="multiclass", num_classes=num_classes, average='macro').to(device)
 
     # Training Loop
-    for epoch in range(epochs):
+    for epoch in tqdm.trange(epochs):
         print(f'entering the training loop, we are on: {device}')
         model.train()
         running_loss = 0.0
