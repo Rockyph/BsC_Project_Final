@@ -30,7 +30,7 @@ transform = transforms.Compose([
     transforms.RandomHorizontalFlip(),
     transforms.RandomCrop(32, padding=4),
     transforms.ToTensor(),
-    transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261))
+    transforms.Normalize((0.5,), (0.5,))
 ])
 def count_trainable_parameters(model):
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -61,10 +61,10 @@ def main():
     testloader_cifar = DataLoader(testset_cifar, batch_size=batch_size, shuffle=False, num_workers=2)
 
 
-    trainset_fmnist = torchvision.datasets.CIFAR10(root='./data_fmnist', train=True, download=True, transform=transform)
+    trainset_fmnist = torchvision.datasets.FashionMNIST(root='./data_fmnist', train=True, download=True, transform=transform)
     trainloader_fmnist = DataLoader(trainset_fmnist, batch_size=batch_size, shuffle=True, num_workers=2)
 
-    testset_fmnist = torchvision.datasets.CIFAR10(root='./data_fmnist', train=False, download=True, transform=transform)
+    testset_fmnist = torchvision.datasets.FashionMNIST(root='./data_fmnist', train=False, download=True, transform=transform)
     testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Initialize the model, loss function, and optimizer
