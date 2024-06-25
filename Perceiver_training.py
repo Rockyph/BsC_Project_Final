@@ -15,7 +15,7 @@ import tqdm
 
 # Hyperparameters
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-batch_size = 160 
+batch_size = 100 
 embedding_size = 128
 latent_size = 128
 attention_heads = 4
