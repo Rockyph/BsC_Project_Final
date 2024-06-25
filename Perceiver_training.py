@@ -61,10 +61,10 @@ def main():
     testloader_cifar = DataLoader(testset_cifar, batch_size=batch_size, shuffle=False, num_workers=2)
 
 
-    trainset_fmnist = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    trainset_fmnist = torchvision.datasets.CIFAR10(root='./data_fmnist', train=True, download=True, transform=transform)
     trainloader_fmnist = DataLoader(trainset_fmnist, batch_size=batch_size, shuffle=True, num_workers=2)
 
-    testset_fmnist = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+    testset_fmnist = torchvision.datasets.CIFAR10(root='./data_fmnist', train=False, download=True, transform=transform)
     testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Initialize the model, loss function, and optimizer
