@@ -13,7 +13,7 @@ import wandb  # Import Weights & Biases
 
 # Hyperparameters
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-batch_size = 128
+batch_size = 64 
 embedding_size = 128
 latent_size = 128
 attention_heads = 4
