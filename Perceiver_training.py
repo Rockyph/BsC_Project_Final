@@ -16,11 +16,11 @@ import tqdm
 # Hyperparameters
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 80 
-embedding_size = 256
-latent_size = 128
+embedding_size = 64
+latent_size = 32
 attention_heads = 4
-perceiver_depth = 4
-transformer_depth = 4
+perceiver_depth = 5
+transformer_depth = 5
 num_classes = 10
 epochs = 20
 learning_rate = 0.0003
@@ -54,11 +54,18 @@ def main():
 
     # CIFAR-10 Dataset
     print(f'Device: {device}')
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
-    trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
+    trainset_cifar = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    trainloader_cifar = DataLoader(trainset_cifar, batch_size=batch_size, shuffle=True, num_workers=2)
 
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
-    testloader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
+    testset_cifar = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+    testloader_cifar = DataLoader(testset_cifar, batch_size=batch_size, shuffle=False, num_workers=2)
+
+
+    trainset_fmnist = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
+    trainloader_fmnist = DataLoader(trainset_fmnist, batch_size=batch_size, shuffle=True, num_workers=2)
+
+    testset_fmnist = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
+    testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Initialize the model, loss function, and optimizer
     model = Perceiver(device, channels=3, image_size=32, batch_size=batch_size, embedding_size=embedding_size, 
@@ -79,7 +86,7 @@ def main():
         running_loss = 0.0
         running_corrects = 0
         running_total = 0
-        for i, (inputs, labels) in enumerate(trainloader):
+        for i, (inputs, labels) in enumerate(trainloader_fmnist):
             inputs, labels = inputs.to(device), labels.to(device)
 
             # Zero the parameter gradients
@@ -118,7 +125,7 @@ def main():
         test_accuracy_metric = Accuracy(task="multiclass", num_classes=num_classes).to(device)
         test_f1_metric = F1Score(task="multiclass", num_classes=num_classes, average='macro').to(device)
         with torch.no_grad():
-            for inputs, labels in testloader:
+            for inputs, labels in testloader_fmnist:
                 inputs, labels = inputs.to(device), labels.to(device)
                 outputs = model(inputs)
                 _, predicted = torch.max(outputs.data, 1)
