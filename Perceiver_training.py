@@ -19,11 +19,11 @@ batch_size = 80
 embedding_size = 64
 latent_size = 32
 attention_heads = 4
-perceiver_depth = 5
-transformer_depth = 5
+perceiver_depth = 3
+transformer_depth = 3
 num_classes = 10
 epochs = 20
-learning_rate = 0.0003
+learning_rate = 0.0001
 
 # Transformations
 transform = transforms.Compose([
