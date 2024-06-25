@@ -68,7 +68,7 @@ def main():
     testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Initialize the model, loss function, and optimizer
-    model = Perceiver(device, channels=3, image_size=32, batch_size=batch_size, embedding_size=embedding_size, 
+    model = Perceiver(device, channels=1, image_size=32, batch_size=batch_size, embedding_size=embedding_size, 
                       latent_size=latent_size, attention_heads=attention_heads, perceiver_depth=perceiver_depth, 
                       transformer_depth=transformer_depth, nr_classes=num_classes).to(device)
     print(count_trainable_parameters(model))
