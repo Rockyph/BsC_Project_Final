@@ -32,6 +32,7 @@ transform = transforms.Compose([
 
 def main():
     # CIFAR-10 Dataset
+    print(f'Device: {device}')
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
     trainloader = DataLoader(trainset, batch_size=batch_size, shuffle=True, num_workers=2)
 
@@ -44,6 +45,7 @@ def main():
                       transformer_depth=transformer_depth, nr_classes=num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    
 
     # Training Loop
     for epoch in range(epochs):
@@ -68,6 +70,7 @@ def main():
             if i % 100 == 99:    # Print every 100 mini-batches
                 print(f'Epoch {epoch + 1}, Batch {i + 1}: Loss = {running_loss / 100:.3f}')
                 running_loss = 0.0
+            print('I am working')
 
         # Evaluate the model on the test set
         model.eval()
