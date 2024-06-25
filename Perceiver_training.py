@@ -23,7 +23,7 @@ perceiver_depth = 6
 transformer_depth = 4
 num_classes = 10
 epochs = 20
-learning_rate = 0.003
+learning_rate = 0.0003
 
 # Transformations
 transform = transforms.Compose([
@@ -32,6 +32,9 @@ transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261))
 ])
+def count_trainable_parameters(model):
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    return trainable_params
 
 def main():
     # Initialize Weights & Biases
@@ -61,6 +64,7 @@ def main():
     model = Perceiver(device, channels=3, image_size=32, batch_size=batch_size, embedding_size=embedding_size, 
                       latent_size=latent_size, attention_heads=attention_heads, perceiver_depth=perceiver_depth, 
                       transformer_depth=transformer_depth, nr_classes=num_classes).to(device)
+    print(count_trainable_parameters(model))
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
