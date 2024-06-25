@@ -7,20 +7,21 @@ import torchvision
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 from Perceiver import Perceiver
+import wandb  # Import Weights & Biases
 
 # Define the Perceiver model (reuse the provided Perceiver, CrossAttention, SelfAttention, TransformerBlock, PerceiverBlock classes)
 
 # Hyperparameters
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 128
-embedding_size = 64
+embedding_size = 128
 latent_size = 128
 attention_heads = 4
 perceiver_depth = 6
 transformer_depth = 4
 num_classes = 10
 epochs = 20
-learning_rate = 1e-4
+learning_rate = 0.003
 
 # Transformations
 transform = transforms.Compose([
@@ -31,6 +32,21 @@ transform = transforms.Compose([
 ])
 
 def main():
+    # Initialize Weights & Biases
+    api_key = "14037597d70b3d9a3bfb20066d401edf14065e6d"
+    wandb.login(key=api_key)
+    wandb.init(project="perceiver-cifar10", config={
+        "batch_size": batch_size,
+        "embedding_size": embedding_size,
+        "latent_size": latent_size,
+        "attention_heads": attention_heads,
+        "perceiver_depth": perceiver_depth,
+        "transformer_depth": transformer_depth,
+        "num_classes": num_classes,
+        "epochs": epochs,
+        "learning_rate": learning_rate
+    })
+
     # CIFAR-10 Dataset
     print(f'Device: {device}')
     trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
@@ -45,7 +61,6 @@ def main():
                       transformer_depth=transformer_depth, nr_classes=num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
-    
 
     # Training Loop
     for epoch in range(epochs):
@@ -64,13 +79,13 @@ def main():
             loss.backward()
             optimizer.step()
 
-            # Print statistics
+            # Accumulate loss
             running_loss += loss.item()
-            print('i am working')
-            if i % 100 == 99:    # Print every 100 mini-batches
-                print(f'Epoch {epoch + 1}, Batch {i + 1}: Loss = {running_loss / 100:.3f}')
+            if i % 100 == 99:    # Log every 100 mini-batches
+                average_loss = running_loss / 100
+                print(f'Epoch {epoch + 1}, Batch {i + 1}: Loss = {average_loss:.3f}')
+                wandb.log({"Loss": average_loss})
                 running_loss = 0.0
-            print('I am working')
 
         # Evaluate the model on the test set
         model.eval()
@@ -84,9 +99,12 @@ def main():
                 total += labels.size(0)
                 correct += (predicted == labels).sum().item()
 
-        print(f'Epoch {epoch + 1}: Accuracy on test set = {100 * correct / total:.2f}%')
+        accuracy = 100 * correct / total
+        print(f'Epoch {epoch + 1}: Accuracy on test set = {accuracy:.2f}%')
+        wandb.log({"Test Accuracy": accuracy, "Epoch": epoch + 1})
 
     print('Finished Training')
+    wandb.finish()
 
 if __name__ == '__main__':
     main()
