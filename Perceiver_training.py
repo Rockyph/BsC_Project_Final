@@ -49,7 +49,7 @@ def main():
 
     # Training Loop
     for epoch in range(epochs):
-        print('entering the training loop')
+        print(f'entering the training loop, we are on: {device}')
         model.train()
         running_loss = 0.0
         for i, (inputs, labels) in enumerate(trainloader):
