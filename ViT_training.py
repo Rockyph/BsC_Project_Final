@@ -17,9 +17,9 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 180
 image_size = 32
 patch_size = 4
-embedding_size = 128
+embedding_size = 64
 attention_heads = 4
-ff = 50
+ff = 80
 depth = 4
 nr_classes = 10
 epochs = 20
@@ -40,7 +40,7 @@ def main():
     # Initialize Weights & Biases
     api_key = "14037597d70b3d9a3bfb20066d401edf14065e6d"
     wandb.login(key=api_key)
-    wandb.init(project="vision-transformer-cifar10", config={
+    wandb.init(project="vision-transformer-Fashion_mnist", config={
         "batch_size": batch_size,
         "image_size": image_size,
         "patch_size": patch_size,
