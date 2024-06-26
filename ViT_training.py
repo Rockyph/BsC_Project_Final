@@ -14,13 +14,13 @@ import tqdm
 
 # Hyperparameters
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-batch_size = 64
+batch_size = 180
 image_size = 32
 patch_size = 4
-embedding_size = 256
+embedding_size = 128
 attention_heads = 4
 ff = 50
-depth = 6
+depth = 4
 nr_classes = 10
 epochs = 20
 learning_rate = 0.0003
@@ -61,8 +61,14 @@ def main():
     testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
     testloader = DataLoader(testset, batch_size=batch_size, shuffle=False, num_workers=2)
 
+    trainset_fmnist = torchvision.datasets.FashionMNIST(root='./data_fmnist', train=True, download=True, transform=transform)
+    trainloader_fmnist = DataLoader(trainset_fmnist, batch_size=batch_size, shuffle=True, num_workers=2)
+
+    testset_fmnist = torchvision.datasets.FashionMNIST(root='./data_fmnist', train=False, download=True, transform=transform)
+    testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
+
     # Initialize the model, loss function, and optimizer
-    model = VisionTransformer(device=device, channels=3, image_size=image_size, batch_size=batch_size,
+    model = VisionTransformer(device=device, channels=1, image_size=image_size, batch_size=batch_size,
                               patch_size=patch_size, embedding_size=embedding_size, attention_heads=attention_heads,
                               ff=ff, depth=depth, nr_classes=nr_classes).to(device)
     print(count_trainable_parameters(model))
@@ -78,7 +84,7 @@ def main():
         print(f'entering the training loop, we are on: {device}')
         model.train()
         running_loss = 0.0
-        for i, (inputs, labels) in enumerate(trainloader):
+        for i, (inputs, labels) in enumerate(trainloader_fmnist):
             inputs, labels = inputs.to(device), labels.to(device)
 
             # Zero the parameter gradients
@@ -113,7 +119,7 @@ def main():
         test_accuracy_metric = Accuracy(task="multiclass", num_classes=nr_classes).to(device)
         test_f1_metric = F1Score(task="multiclass", num_classes=nr_classes, average='macro').to(device)
         with torch.no_grad():
-            for inputs, labels in testloader:
+            for inputs, labels in testloader_fmnist:
                 inputs, labels = inputs.to(device), labels.to(device)
                 outputs = model(inputs)
                 _, predicted = torch.max(outputs.data, 1)
