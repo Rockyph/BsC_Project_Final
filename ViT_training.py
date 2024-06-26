@@ -17,12 +17,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 180
 image_size = 32
 patch_size = 4
-embedding_size = 64
+embedding_size = 16
 attention_heads = 4
 ff = 80
 depth = 4
 nr_classes = 10
-epochs = 20
+epochs = 40
 learning_rate = 0.0003
 
 # Transformations

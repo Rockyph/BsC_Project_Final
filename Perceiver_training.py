@@ -20,9 +20,9 @@ embedding_size = 256
 latent_size = 128
 attention_heads = 4
 perceiver_depth = 3
-transformer_depth = 4
+transformer_depth = 3
 num_classes = 10
-epochs = 20
+epochs = 40
 learning_rate = 0.0001
 
 # Transformations
