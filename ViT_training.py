@@ -22,7 +22,7 @@ attention_heads = 4
 ff = 80
 depth = 4
 nr_classes = 10
-epochs = 40
+epochs = 150
 learning_rate = 0.0003
 
 # Transformations
