@@ -40,7 +40,7 @@ def main():
     # Initialize Weights & Biases
     api_key = "14037597d70b3d9a3bfb20066d401edf14065e6d"
     wandb.login(key=api_key)
-    wandb.init(project="perceiver-cifar10", config={
+    wandb.init(project="perceiver-Fashion_mnist", config={
         "batch_size": batch_size,
         "embedding_size": embedding_size,
         "latent_size": latent_size,
