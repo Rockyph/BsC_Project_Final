@@ -67,10 +67,10 @@ def main():
     testset_fmnist = torchvision.datasets.FashionMNIST(root='./data_fmnist', train=False, download=True, transform=transform)
     testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
 
-    trainset_cifar_100 = torchvision.datasets.FashionMNIST(root='./data_cifar_100', train=True, download=True, transform=transform)
+    trainset_cifar_100 = torchvision.datasets.CIFAR100(root='./data_cifar_100', train=True, download=True, transform=transform)
     trainloader_cifar_100 = DataLoader(trainset_cifar_100, batch_size=batch_size, shuffle=True, num_workers=2)
 
-    testset_cifar_100 = torchvision.datasets.FashionMNIST(root='./data_cifar_100', train=False, download=True, transform=transform)
+    testset_cifar_100 = torchvision.datasets.CIFAR100(root='./data_cifar_100', train=False, download=True, transform=transform)
     testloader_cifar_100 = DataLoader(testset_cifar_100, batch_size=batch_size, shuffle=False, num_workers=2)
 
     # Initialize the model, loss function, and optimizer
