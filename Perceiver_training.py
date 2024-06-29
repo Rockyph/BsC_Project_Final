@@ -21,7 +21,7 @@ latent_size = 128
 attention_heads = 4
 perceiver_depth = 3
 transformer_depth = 3
-num_classes = 10
+num_classes = 100
 epochs = 150
 learning_rate = 0.0001
 
