@@ -17,7 +17,7 @@ import tqdm
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 batch_size = 80 
 embedding_size = 64
-latent_size = 256
+latent_size = 128
 attention_heads = 4
 perceiver_depth = 3
 transformer_depth = 3
@@ -28,9 +28,9 @@ learning_rate = 0.0001
 # Transformations
 transform = transforms.Compose([
     transforms.RandomHorizontalFlip(),
-    transforms.RandomCrop(32, padding=4),
+    transforms.RandomCrop(8, padding=4),
     transforms.ToTensor(),
-    transforms.Normalize((0.5,), (0.5,))
+    transforms.Normalize((0.5071, 0.4865, 0.4409), (0.2673, 0.2564, 0.2762))
 ])
 def count_trainable_parameters(model):
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -40,7 +40,7 @@ def main():
     # Initialize Weights & Biases
     api_key = "14037597d70b3d9a3bfb20066d401edf14065e6d"
     wandb.login(key=api_key)
-    wandb.init(project="perceiver-Fashion_mnist", config={
+    wandb.init(project="perceiver-Cifar-100", config={
         "batch_size": batch_size,
         "embedding_size": embedding_size,
         "latent_size": latent_size,
@@ -67,8 +67,14 @@ def main():
     testset_fmnist = torchvision.datasets.FashionMNIST(root='./data_fmnist', train=False, download=True, transform=transform)
     testloader_fmnist = DataLoader(testset_fmnist, batch_size=batch_size, shuffle=False, num_workers=2)
 
+    trainset_cifar_100 = torchvision.datasets.FashionMNIST(root='./data_cifar_100', train=True, download=True, transform=transform)
+    trainloader_cifar_100 = DataLoader(trainset_cifar_100, batch_size=batch_size, shuffle=True, num_workers=2)
+
+    testset_cifar_100 = torchvision.datasets.FashionMNIST(root='./data_cifar_100', train=False, download=True, transform=transform)
+    testloader_cifar_100 = DataLoader(testset_cifar_100, batch_size=batch_size, shuffle=False, num_workers=2)
+
     # Initialize the model, loss function, and optimizer
-    model = Perceiver(device, channels=1, image_size=32, batch_size=batch_size, embedding_size=embedding_size, 
+    model = Perceiver(device, channels=3, image_size=32, batch_size=batch_size, embedding_size=embedding_size, 
                       latent_size=latent_size, attention_heads=attention_heads, perceiver_depth=perceiver_depth, 
                       transformer_depth=transformer_depth, nr_classes=num_classes).to(device)
     print(count_trainable_parameters(model))
@@ -86,7 +92,7 @@ def main():
         running_loss = 0.0
         running_corrects = 0
         running_total = 0
-        for i, (inputs, labels) in enumerate(trainloader_fmnist):
+        for i, (inputs, labels) in enumerate(trainloader_cifar_100):
             inputs, labels = inputs.to(device), labels.to(device)
 
             # Zero the parameter gradients
@@ -125,7 +131,7 @@ def main():
         test_accuracy_metric = Accuracy(task="multiclass", num_classes=num_classes).to(device)
         test_f1_metric = F1Score(task="multiclass", num_classes=num_classes, average='macro').to(device)
         with torch.no_grad():
-            for inputs, labels in testloader_fmnist:
+            for inputs, labels in testloader_cifar_100:
                 inputs, labels = inputs.to(device), labels.to(device)
                 outputs = model(inputs)
                 _, predicted = torch.max(outputs.data, 1)
